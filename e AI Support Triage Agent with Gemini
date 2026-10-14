@@ -1,0 +1,148 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..7014a57[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,32 @@[m
+[32m+[m[32m# Credentials and sensitive local configuration[m
+[32m+[m[32m.env[m
+[32m+[m[32m.env.*[m
+[32m+[m[32m!.env.example[m
+[32m+[m[32m*.pem[m
+[32m+[m[32m*.key[m
+[32m+[m[32mcredentials.json[m
+[32m+[m[32msecrets/[m
+[32m+[m
+[32m+[m[32m# Python[m
+[32m+[m[32m__pycache__/[m
+[32m+[m[32m*.py[cod][m
+[32m+[m[32m.pytest_cache/[m
+[32m+[m[32m.venv/[m
+[32m+[m[32mvenv/[m
+[32m+[m
+[32m+[m[32m# Local databases and n8n runtime[m
+[32m+[m[32m*.db[m
+[32m+[m[32m*.sqlite[m
+[32m+[m[32m*.sqlite3[m
+[32m+[m[32m.n8n/[m
+[32m+[m
+[32m+[m[32m# Runtime files[m
+[32m+[m[32m*.log[m
+[32m+[m[32mlogs/[m
+[32m+[m[32mtmp/[m
+[32m+[m
+[32m+[m[32m# Editor / OS[m
+[32m+[m[32m.vscode/[m
+[32m+[m[32m.idea/[m
+[32m+[m[32m.DS_Store[m
+[32m+[m[32mThumbs.db[m
+[1mdiff --git a/LICENSE b/LICENSE[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a2f964c[m
+[1m--- /dev/null[m
+[1m+++ b/LICENSE[m
+[36m@@ -0,0 +1,21 @@[m
+[32m+[m[32mMIT License[m
+[32m+[m
+[32m+[m[32mCopyright (c) 2026 Filip Orehek[m
+[32m+[m
+[32m+[m[32mPermission is hereby granted, free of charge, to any person obtaining a copy[m
+[32m+[m[32mof this software and associated documentation files (the "Software"), to deal[m
+[32m+[m[32min the Software without restriction, including without limitation the rights[m
+[32m+[m[32mto use, copy, modify, merge, publish, distribute, sublicense, and/or sell[m
+[32m+[m[32mcopies of the Software, and to permit persons to whom the Software is[m
+[32m+[m[32mfurnished to do so, subject to the following conditions:[m
+[32m+[m
+[32m+[m[32mThe above copyright notice and this permission notice shall be included in all[m
+[32m+[m[32mcopies or substantial portions of the Software.[m
+[32m+[m
+[32m+[m[32mTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR[m
+[32m+[m[32mIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,[m
+[32m+[m[32mFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE[m
+[32m+[m[32mAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER[m
+[32m+[m[32mLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,[m
+[32m+[m[32mOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE[m
+[32m+[m[32mSOFTWARE.[m
+[1mdiff --git a/README.md b/README.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c1145b3[m
+[1m--- /dev/null[m
+[1m+++ b/README.md[m
+[36m@@ -0,0 +1,67 @@[m
+[32m+[m[32m# AI Support Triage Agent – Google Gemini + n8n[m
+[32m+[m
+[32m+[m[32mPortfolio projekt: automatické třídění zákaznických zpráv pomocí skutečného LLM (Google Gemini API), bezpečnostních pravidel, lidské kontroly a evidence v lokálním mock CRM (Python + SQLite). Používá pouze syntetická testovací data.[m
+[32m+[m
+[32m+[m[32m## Architektura[m
+[32m+[m
+[32m+[m[32m`POST /webhook/ai-support-live` → `Validate input` → `Valid request?` → `Gemini classify` → `Parse AI result` → `Security Guard` → `Human review required?` → `Mark for review` / `Mark routine` → `Store ticket` → `Reply to caller`.[m
+[32m+[m
+[32m+[m[32mPři neplatném vstupu vede větev `Valid request?` na uzel `Validation error` (HTTP 400). Návrh odpovědi se ukládá jako koncept, **neodesílá se zákazníkovi**. `Security Guard` je pouze omezená pravidlová ochrana pro vybrané typy incidentů; **nezaručuje obecnou odolnost vůči prompt injection**.[m
+[32m+[m
+[32m+[m[32m![Schéma architektury](docs/architecture.svg)[m
+[32m+[m
+[32m+[m[32m## Požadavky[m
+[32m+[m
+[32m+[m[32m- Windows 11 / macOS / Linux s Docker Desktop nebo Docker Engine + Compose pluginem[m
+[32m+[m[32m- Pro automatické Bash testy: Bash, `curl` a Python 3 (standard library)[m
+[32m+[m[32m- Google Gemini API klíč (bezplatná kvóta závisí na účtu a regionu)[m
+[32m+[m[32m- Pro lokální reprodukovatelnost jsou image verze připnuté v `docker-compose.yml`; dostupnost tagů a Docker spuštění je nutné ověřit na cílovém počítači.[m
+[32m+[m
+[32m+[m[32m## Spuštění[m
+[32m+[m
+[32m+[m[32m1. Ve složce projektu spusťte `docker compose pull && docker compose up -d`.[m
+[32m+[m[32m2. Otevřete n8n: <http://localhost:5678> a vytvořte lokální účet.[m
+[32m+[m[32m3. Importujte `workflows/ai-support-gemini.json` přes menu editoru **Import from File**.[m
+[32m+[m[32m4. V uzlu **Gemini classify** vytvořte / vyberte credential typu **Header Auth**: `Name = x-goog-api-key`, `Value = <vlastní Gemini API klíč>`.[m
+[32m+[m[32m5. V uzlu **Gemini classify** ověřte URL modelu. Export používá `gemini-3.5-flash-lite:generateContent`.[m
+[32m+[m[32m6. Uložte a publikujte workflow. Nepublikujte současně jiné workflow se stejnou webhook cestou.[m
+[32m+[m[32m7. Zkontrolujte <http://localhost:8000/health> a <http://localhost:8000/tickets>.[m
+[32m+[m[32m8. Spusťte `bash run_tests.sh`. Skript automaticky vytváří unikátní `request_id` a porovnává výsledek s CRM.[m
+[32m+[m
+[32m+[m[32mProduction webhook: `http://localhost:5678/webhook/ai-support-live`.[m
+[32m+[m
+[32m+[m[32mTestovací webhook `http://localhost:5678/webhook-test/ai-support-live` funguje pouze během čekání na testovací událost v editoru n8n.[m
+[32m+[m
+[32m+[m[32m## Automatické regresní testy[m
+[32m+[m
+[32m+[m[32m```bash[m
+[32m+[m[32mbash run_tests.sh[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32mVolitelné proměnné `WEBHOOK_URL` a `CRM_URL` umožňují změnit cílové lokální adresy. Testy v `scripts/e2e_check.py` využívají jen standardní knihovnu Pythonu. Každý pozitivní test získá nové ID, duplicitní test znovu odešle ID vytvořeného ticketu. Testy kontrolují HTTP odpověď a obsah mock CRM; konečné skóre se vypíše jako `PASS` / `FAIL` a neúspěch vrátí nenulový exit code.[m
+[32m+[m
+[32m+[m[32m> Poznámka: Protože n8n při selhání uzlu `Store ticket` může vrátit volajícímu HTTP 500 namísto původního 409 z CRM, duplicitní scénář vyhodnocujeme hlavně podle toho, že se nezaložil druhý ticket. Taková odpověď HTTP 500 zůstává nedostatkem API ergonomie a měla by se později opravit.[m
+[32m+[m
+[32m+[m[32mSamostatné unit testy mock CRM:[m
+[32m+[m
+[32m+[m[32m```bash[m
+[32m+[m[32mpython -m unittest discover -s tests -v[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32mDokumentace scénářů: [docs/test-plan.md](docs/test-plan.md).[m
+[32m+[m
+[32m+[m[32m## Bezpečnost a limity[m
+[32m+[m
+[32m+[m[32m- Ve veřejném workflow nejsou credentials ani interní ID instance. Po importu je třeba znovu vybrat vlastní credential.[m
+[32m+[m[32m- Mock CRM a n8n poslouchají na `127.0.0.1`; nejedná se o produkční, autentizovanou veřejnou službu.[m
+[32m+[m[32m- Skript používá pouze syntetické příklady a čte lokální testovací databázi.[m
+[32m+[m[32m- LLM může chybně klasifikovat nebo formulovat nepodložené tvrzení v `draft_reply`; **návrhy neodesílejte automaticky**.[m
+[32m+[m[32m- Ochrana `Security Guard` je částečná a testy prokazují pouze chování na zvolených příkladech.[m
+[32m+[m
+[32m+[m[32m## Použité technologie[m
+[32m+[m
+[32m+[m[32mn8n, Google Gemini API, JavaScript (n8n Code), Python 3, SQLite, Docker Compose, Bash.[m
+[32m+[m
+[32m+[m[32m## Licence[m
+[32m+[m
+[32m+[m[32mVlastní kód a dokumentace tohoto repozitáře jsou licencovány pod [MIT License](LICENSE). n8n a ostatní závislosti podléhají vlastním licencím.[m
+[1mdiff --git a/docker-compose.yml b/docker-compose.yml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a8133d3[m
+[1m--- /dev/null[m
+[1m+++ b/docker-compose.yml[m
+[36m@@ -0,0 +1,29 @@[m
+[32m+[m[32mservices:[m
+[32m+[m[32m  n8n:[m
+[32m+[m[32m    image: docker.n8n.io/n8nio/n8n:2.43.4[m
+[32m+[m[32m 
