@@ -1,0 +1,32 @@
+# Credentials and sensitive local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local databases and n8n runtime
+*.db
+*.sqlite
+*.sqlite3
+.n8n/
+
+# Runtime files
+*.log
+logs/
+tmp/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
