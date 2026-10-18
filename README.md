@@ -14,8 +14,8 @@ Při neplatném vstupu vede větev `Valid request?` na uzel `Validation error` (
 
 - Windows 11 / macOS / Linux s Docker Desktop nebo Docker Engine + Compose pluginem
 - Pro automatické Bash testy: Bash, `curl` a Python 3 (standard library)
-- Google Gemini API klíč (bezplatná kvóta závisí na účtu a regionu)
-- Pro lokální reprodukovatelnost jsou image verze připnuté v `docker-compose.yml`; dostupnost tagů a Docker spuštění je nutné ověřit na cílovém počítači.
+- Google Gemini API klíč
+- Pro lokální reprodukovatelnost jsou image verze připnuté v `docker-compose.yml`.
 
 ## Spuštění
 
@@ -24,7 +24,7 @@ Při neplatném vstupu vede větev `Valid request?` na uzel `Validation error` (
 3. Importujte `workflows/ai-support-gemini.json` přes menu editoru **Import from File**.
 4. V uzlu **Gemini classify** vytvořte / vyberte credential typu **Header Auth**: `Name = x-goog-api-key`, `Value = <vlastní Gemini API klíč>`.
 5. V uzlu **Gemini classify** ověřte URL modelu. Export používá `gemini-3.5-flash-lite:generateContent`.
-6. Uložte a publikujte workflow. Nepublikujte současně jiné workflow se stejnou webhook cestou.
+6. Uložte a publikujte workflow.
 7. Zkontrolujte <http://localhost:8000/health> a <http://localhost:8000/tickets>.
 8. Spusťte `bash run_tests.sh`. Skript automaticky vytváří unikátní `request_id` a porovnává výsledek s CRM.
 
@@ -40,7 +40,7 @@ bash run_tests.sh
 
 Volitelné proměnné `WEBHOOK_URL` a `CRM_URL` umožňují změnit cílové lokální adresy. Testy v `scripts/e2e_check.py` využívají jen standardní knihovnu Pythonu. Každý pozitivní test získá nové ID, duplicitní test znovu odešle ID vytvořeného ticketu. Testy kontrolují HTTP odpověď a obsah mock CRM; konečné skóre se vypíše jako `PASS` / `FAIL` a neúspěch vrátí nenulový exit code.
 
-> Poznámka: Protože n8n při selhání uzlu `Store ticket` může vrátit volajícímu HTTP 500 namísto původního 409 z CRM, duplicitní scénář vyhodnocujeme hlavně podle toho, že se nezaložil druhý ticket. Taková odpověď HTTP 500 zůstává nedostatkem API ergonomie a měla by se později opravit.
+> Poznámka: Protože n8n při selhání uzlu `Store ticket` může vrátit volajícímu HTTP 500 namísto původního 409 z CRM, duplicitní scénář vyhodnocujeme hlavně podle toho, že se nezaložil druhý ticket.
 
 Samostatné unit testy mock CRM:
 
@@ -55,7 +55,7 @@ Dokumentace scénářů: [docs/test-plan.md](docs/test-plan.md).
 - Ve veřejném workflow nejsou credentials ani interní ID instance. Po importu je třeba znovu vybrat vlastní credential.
 - Mock CRM a n8n poslouchají na `127.0.0.1`; nejedná se o produkční, autentizovanou veřejnou službu.
 - Skript používá pouze syntetické příklady a čte lokální testovací databázi.
-- LLM může chybně klasifikovat nebo formulovat nepodložené tvrzení v `draft_reply`; **návrhy neodesílejte automaticky**.
+- LLM může chybně klasifikovat nebo formulovat nepodložené tvrzení v `draft_reply`.
 - Ochrana `Security Guard` je částečná a testy prokazují pouze chování na zvolených příkladech.
 
 ## Použité technologie
