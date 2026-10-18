@@ -2,6 +2,9 @@
 
 Portfolio projekt: automatické třídění zákaznických zpráv pomocí skutečného LLM (Google Gemini API), bezpečnostních pravidel, lidské kontroly a evidence v lokálním mock CRM (Python + SQLite). Používá pouze syntetická testovací data.
 
+## Výstupy testování
+Screenshoty a tickety v txt formátu najdete ve složce [results](results).
+
 ## Architektura
 
 `POST /webhook/ai-support-live` → `Validate input` → `Valid request?` → `Gemini classify` → `Parse AI result` → `Security Guard` → `Human review required?` → `Mark for review` / `Mark routine` → `Store ticket` → `Reply to caller`.
