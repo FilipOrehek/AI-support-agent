@@ -1,4 +1,4 @@
-# AI Support Triage Agent – Google Gemini + n8n
+# AI Support Agent – Google Gemini + n8n
 
 Portfolio projekt: automatické třídění zákaznických zpráv pomocí skutečného LLM (Google Gemini API), bezpečnostních pravidel, lidské kontroly a evidence v lokálním mock CRM (Python + SQLite). Používá pouze syntetická testovací data.
 
